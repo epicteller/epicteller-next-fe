@@ -14,6 +14,7 @@
     "@mui/lab": "^5.0.0-alpha.61",
     "@mui/material": "^5.2.5",
     "axios": "^0.24.0",
+    "axios-case-converter": "^0.9.0",
     "camelcase-keys": "^7.0.1",
     "luxon": "^2.2.0",
     "next": "12.0.7",

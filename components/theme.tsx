@@ -1,9 +1,6 @@
-import { createTheme, ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material';
 import React, { useMemo } from 'react';
-
-export interface ProviderProps {
-  children?: React.ReactNode
-}
+import { ProviderProps } from '../types/provider';
 
 const ThemeProvider: React.FunctionComponent = ({ children }: ProviderProps) => {
   const theme = useMemo(
