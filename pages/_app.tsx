@@ -1,14 +1,14 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import Head from 'next/head'
+import '../styles/globals.css';
+import type { AppProps } from 'next/app';
+import { SnackbarProvider } from 'notistack';
+import ThemeProvider from '../components/theme';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <>
-    <Head>
-      <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, viewport-fit=cover" />
-    </Head>
-    <Component {...pageProps} />
-  </>
-}
+const MyApp = ({ Component, pageProps }: AppProps) => (
+  <ThemeProvider>
+    <SnackbarProvider maxSnack={5}>
+      <Component {...pageProps} />
+    </SnackbarProvider>
+  </ThemeProvider>
+);
 
-export default MyApp
+export default MyApp;
