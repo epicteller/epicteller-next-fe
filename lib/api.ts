@@ -6,7 +6,7 @@ const { APIBaseURL } = process.env;
 const config: AxiosRequestConfig = {
   baseURL: APIBaseURL,
   withCredentials: true,
-  timeout: 10000,
+  timeout: 5000,
 };
 
 const epAPI = applyCaseMiddleware(axios.create(config));

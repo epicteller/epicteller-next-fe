@@ -1,6 +1,6 @@
 import { Fetcher, SWRConfig } from 'swr';
 import { ProviderProps } from '../types/provider';
-import epAPI from '../utils/api';
+import epAPI from '../lib/api';
 
 const fetcher: Fetcher = async (url: string) => {
   const response = await epAPI.get(url);
