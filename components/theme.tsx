@@ -1,4 +1,5 @@
-import { createTheme, CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material';
+import { CssBaseline } from '@mui/material';
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import React, { useMemo } from 'react';
 import { ProviderProps } from '../types/provider';
 
