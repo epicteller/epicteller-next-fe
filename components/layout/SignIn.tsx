@@ -1,6 +1,7 @@
 import { makeStyles } from '@mui/styles';
 import { Grid, Paper, useTheme } from '@mui/material';
 import { ReactElement } from 'react';
+import { LayoutProps } from '../../types/layout';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();
@@ -21,11 +22,12 @@ const useStyles = makeStyles(() => {
       justifyContent: 'center',
       backgroundColor: 'rgba(255, 255, 255, 0)',
       backdropFilter: 'blur(10px) brightness(0.5)',
+      backgroundImage: 'unset',
     },
   };
 });
 
-const SignInLayout = (children: ReactElement) => {
+const SignInLayout = ({ children }: LayoutProps): ReactElement => {
   const classes = useStyles();
   return (
     <Grid

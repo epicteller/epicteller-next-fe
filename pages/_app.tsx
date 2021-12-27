@@ -2,22 +2,39 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SnackbarProvider } from 'notistack';
+import TagManager, { TagManagerArgs } from 'react-gtm-module';
+import { useEffect } from 'react';
 import ThemeProvider from '../components/theme';
 import APIProvider from '../components/api';
+import { NextPageWithLayout } from '../types/layout';
 
-const MyApp = ({ Component, pageProps }: AppProps) => (
-  <>
-    <Head>
-      <title>Epicteller (Alpha)</title>
-    </Head>
-    <ThemeProvider>
-      <SnackbarProvider maxSnack={5}>
-        <APIProvider>
-          <Component {...pageProps} />
-        </APIProvider>
-      </SnackbarProvider>
-    </ThemeProvider>
-  </>
-);
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+const tagManagerArgs: TagManagerArgs = {
+  gtmId: process.env.NEXT_PUBLIC_GTM_ID ?? '',
+};
+
+const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout ?? ((page) => page);
+  useEffect(() => {
+    TagManager.initialize(tagManagerArgs);
+  }, []);
+  return (
+    <>
+      <Head>
+        <title>Epicteller (Alpha)</title>
+      </Head>
+      <ThemeProvider>
+        <SnackbarProvider maxSnack={5}>
+          <APIProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </APIProvider>
+        </SnackbarProvider>
+      </ThemeProvider>
+    </>
+  );
+};
 
 export default MyApp;

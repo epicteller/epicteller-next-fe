@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import applyCaseMiddleware from 'axios-case-converter';
 
-const { APIBaseURL } = process.env;
+const APIBaseURL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/`;
 
 const config: AxiosRequestConfig = {
   baseURL: APIBaseURL,
