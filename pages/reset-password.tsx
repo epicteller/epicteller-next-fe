@@ -1,7 +1,7 @@
 import { makeStyles } from '@mui/styles';
 import { Grid, Grow, InputAdornment, Link, TextField, Typography, useTheme } from '@mui/material';
 import { LoadingButton as Button } from '@mui/lab';
-import { FormEvent, useState } from 'react';
+import { FormEvent, ReactElement, ReactNode, useState } from 'react';
 import { AxiosError } from 'axios';
 import { LockOutlined, MailOutlined } from '@mui/icons-material';
 import NextLink from 'next/link';
@@ -117,117 +117,119 @@ const ResetPasswordPage: NextPageWithLayout = () => {
   }
 
   return (
-    <SignInLayout>
-      <div className={classes.form}>
-        {!token ? (
-          <form onSubmit={onValidateEmailSubmit} className={classes.form}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              label="邮箱地址"
-              error={!!extractValidationError(validationError?.detail, 'email')}
-              helperText={extractValidationError(validationError?.detail, 'email')?.msg}
-              InputProps={{
-                type: 'email',
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MailOutlined />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              value={repeatEmail}
-              onChange={(e) => setRepeatEmail(e.target.value)}
-              label="确认邮箱地址"
-              error={!!repeatEmail && email !== repeatEmail}
-              helperText={!!repeatEmail && email !== repeatEmail && '两次邮箱输入不一致'}
-              InputProps={{
-                type: 'email',
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MailOutlined />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Button
-              className={classes.submit}
-              type="submit"
-              variant="contained"
-              fullWidth
-              color="primary"
-            >
-              发送重置邮件
-            </Button>
-            <Grid container justifyContent="space-between" direction="row-reverse">
-              <Grid item>
-                <Link color="textSecondary" component={NextLink} href="/" variant="body2">返回登录</Link>
-              </Grid>
+    <div className={classes.form}>
+      {!token ? (
+        <form onSubmit={onValidateEmailSubmit} className={classes.form}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            label="邮箱地址"
+            error={!!extractValidationError(validationError?.detail, 'email')}
+            helperText={extractValidationError(validationError?.detail, 'email')?.msg}
+            InputProps={{
+              type: 'email',
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailOutlined />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            value={repeatEmail}
+            onChange={(e) => setRepeatEmail(e.target.value)}
+            label="确认邮箱地址"
+            error={!!repeatEmail && email !== repeatEmail}
+            helperText={!!repeatEmail && email !== repeatEmail && '两次邮箱输入不一致'}
+            InputProps={{
+              type: 'email',
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailOutlined />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            className={classes.submit}
+            type="submit"
+            variant="contained"
+            fullWidth
+            color="primary"
+          >
+            发送重置邮件
+          </Button>
+          <Grid container justifyContent="space-between" direction="row-reverse">
+            <Grid item>
+              <Link color="textSecondary" component={NextLink} href="/" variant="body2">返回登录</Link>
             </Grid>
-          </form>
-        ) : (
-          <form onSubmit={onResetPassword} className={classes.form}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              label="密码"
-              error={!!extractValidationError(validationError?.detail, 'password')}
-              helperText={extractValidationError(validationError?.detail, 'password')?.msg}
-              InputProps={{
-                type: 'password',
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockOutlined />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              error={!!repeatPassword && password !== repeatPassword}
-              helperText={!!repeatPassword && password !== repeatPassword ? '两次密码输入不一致' : ''}
-              value={repeatPassword}
-              onChange={(e) => setRepeatPassword(e.target.value)}
-              label="确认密码"
-              InputProps={{
-                type: 'password',
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockOutlined />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Button
-              className={classes.submit}
-              type="submit"
-              variant="contained"
-              fullWidth
-              color="primary"
-            >
-              重置密码
-            </Button>
-          </form>
-        )}
-      </div>
-    </SignInLayout>
+          </Grid>
+        </form>
+      ) : (
+        <form onSubmit={onResetPassword} className={classes.form}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            label="密码"
+            error={!!extractValidationError(validationError?.detail, 'password')}
+            helperText={extractValidationError(validationError?.detail, 'password')?.msg}
+            InputProps={{
+              type: 'password',
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlined />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            error={!!repeatPassword && password !== repeatPassword}
+            helperText={!!repeatPassword && password !== repeatPassword ? '两次密码输入不一致' : ''}
+            value={repeatPassword}
+            onChange={(e) => setRepeatPassword(e.target.value)}
+            label="确认密码"
+            InputProps={{
+              type: 'password',
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlined />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            className={classes.submit}
+            type="submit"
+            variant="contained"
+            fullWidth
+            color="primary"
+          >
+            重置密码
+          </Button>
+        </form>
+      )}
+    </div>
   );
 };
+
+ResetPasswordPage.getLayout = (page: ReactElement): ReactNode => (
+  <SignInLayout>{page}</SignInLayout>
+);
 
 export default ResetPasswordPage;

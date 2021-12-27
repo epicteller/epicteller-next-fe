@@ -1,17 +1,29 @@
 import { makeStyles } from '@mui/styles';
-import { Alert, Button, CircularProgress, Grid, InputAdornment, Link, TextField, useTheme } from '@mui/material';
+import {
+  Alert,
+  CircularProgress,
+  Grid,
+  Grow,
+  InputAdornment,
+  Link,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { LoadingButton as Button } from '@mui/lab';
 import { useRouter } from 'next/router';
-import { FormEvent, useState } from 'react';
+import { FormEvent, ReactElement, ReactNode, useState } from 'react';
 import { AxiosError } from 'axios';
 import useSWR from 'swr';
 import NextLink from 'next/link';
-import { LockOutlined, MailOutlined, MailOutlined, PersonOutlined } from '@mui/icons-material';
+import { LockOutlined, MailOutlined, PersonOutlined } from '@mui/icons-material';
 import { NextPageWithLayout } from '../types/layout';
 import useNotifier from '../hooks/notifier';
 import useMe from '../hooks/me';
 import { ValidationErrorResponse } from '../types/errors/validation';
 import epAPI from '../lib/api';
 import { extractValidationError } from '../lib/error';
+import SignInLayout from '../components/layout/SignIn';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();
@@ -37,11 +49,8 @@ const RegisterPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { notifyError, notifySuccess } = useNotifier();
   const { mutate } = useMe();
-  const [token, setToken] = useState(router.query.token);
-  const [isTokenError, setTokenError] = useState(false);
+  const [token, setToken] = useState(router.query.token ?? null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isValidatingToken, setIsValidatingToken] = useState(false);
-  const [lockEmail, setLockEmail] = useState(false);
   const [sendEmailSuccess, setSendEmailSuccess] = useState(false);
   const [email, setEmail] = useState('');
   const [repeatEmail, setRepeatEmail] = useState('');
@@ -74,10 +83,64 @@ const RegisterPage: NextPageWithLayout = () => {
     }
   };
 
+  const onRegister = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (password !== repeatPassword) {
+      return;
+    }
+    if (isSubmitting) {
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await epAPI.post('/register', {
+        validateToken: token,
+        password,
+        name,
+      });
+      mutate();
+      notifySuccess('注册成功');
+      await router.push('/');
+    } catch (e) {
+      const err = e as AxiosError;
+      if (err.response?.data.name === 'ValidationError') {
+        setValidationError(err.response.data);
+      } else if (err.response?.data?.message) {
+        notifyError(err.response?.data?.message);
+      } else {
+        notifyError('出错了，请稍后再试');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const isValidatingToken = token && !registerInfo && !error;
+  const lockEmail = isValidatingToken || !!registerInfo;
+  const isTokenError = token && error;
+  if (registerInfo && !error) {
+    setEmail(registerInfo.email);
+  }
+
+  if (sendEmailSuccess) {
+    return (
+      <Grow in>
+        <Grid container direction="column" justifyContent="center" alignItems="center">
+          <Grid item>
+            <Typography className={classes.successView} variant="h2">🎉</Typography>
+          </Grid>
+          <Grid item>
+            <Typography className={classes.successView} variant="h6">已发送验证邮件</Typography>
+          </Grid>
+        </Grid>
+      </Grow>
+    );
+  }
+
   return (
     <div className={classes.form}>
       {isTokenError && (
-        <Alert onClose={() => setTokenError(false)} severity="error">邮箱验证链接已失效，请重试。</Alert>
+        <Alert onClose={() => setToken(null)} severity="error">邮箱验证链接已失效，请重试。</Alert>
       )}
       {!token ? (
         <form onSubmit={onValidateEmailSubmit} className={classes.form}>
@@ -127,6 +190,7 @@ const RegisterPage: NextPageWithLayout = () => {
             variant="contained"
             fullWidth
             color="primary"
+            loading={isSubmitting}
           >
             发送验证邮件
           </Button>
@@ -233,6 +297,7 @@ const RegisterPage: NextPageWithLayout = () => {
             variant="contained"
             fullWidth
             color="primary"
+            loading={isSubmitting}
           >
             注册
           </Button>
@@ -241,5 +306,9 @@ const RegisterPage: NextPageWithLayout = () => {
     </div>
   );
 };
+
+RegisterPage.getLayout = (page: ReactElement): ReactNode => (
+  <SignInLayout>{page}</SignInLayout>
+);
 
 export default RegisterPage;
