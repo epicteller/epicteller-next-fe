@@ -6,7 +6,7 @@ const APIBaseURL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/`;
 const config: AxiosRequestConfig = {
   baseURL: APIBaseURL,
   withCredentials: true,
-  timeout: 5000,
+  timeout: 10000,
 };
 
 const epAPI = applyCaseMiddleware(axios.create(config));

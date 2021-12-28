@@ -6,7 +6,7 @@ module.exports = {
     return [
       {
         source: '/api/:slug*',
-        destination: 'https://api.epicteller.com/api/:slug*',
+        destination: 'http://127.0.0.1:8000/:slug*',
       },
     ];
   },

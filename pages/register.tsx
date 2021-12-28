@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { LoadingButton as Button } from '@mui/lab';
 import { useRouter } from 'next/router';
-import { FormEvent, ReactElement, ReactNode, useState } from 'react';
+import { FormEvent, ReactElement, ReactNode, useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import useSWR from 'swr';
 import NextLink from 'next/link';
@@ -24,6 +24,7 @@ import { ValidationErrorResponse } from '../types/errors/validation';
 import epAPI from '../lib/api';
 import { extractValidationError } from '../lib/error';
 import SignInLayout from '../components/layout/SignIn';
+import Title from '../components/title';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();
@@ -49,7 +50,7 @@ const RegisterPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { notifyError, notifySuccess } = useNotifier();
   const { mutate } = useMe();
-  const [token, setToken] = useState(router.query.token ?? null);
+  const [token, setToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sendEmailSuccess, setSendEmailSuccess] = useState(false);
   const [email, setEmail] = useState('');
@@ -59,6 +60,12 @@ const RegisterPage: NextPageWithLayout = () => {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [validationError, setValidationError] = useState<ValidationErrorResponse | null>(null);
   const { data: registerInfo, error } = useSWR<RegisterInfo>(token ? `/register?token=${token}` : null);
+
+  useEffect(() => {
+    if (router && router.query) {
+      setToken(router.query.token as string);
+    }
+  }, [router]);
 
   const onValidateEmailSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -118,9 +125,12 @@ const RegisterPage: NextPageWithLayout = () => {
   const isValidatingToken = token && !registerInfo && !error;
   const lockEmail = isValidatingToken || !!registerInfo;
   const isTokenError = token && error;
-  if (registerInfo && !error) {
-    setEmail(registerInfo.email);
-  }
+
+  useEffect(() => {
+    if (registerInfo && !error) {
+      setEmail(registerInfo.email);
+    }
+  }, [registerInfo, error]);
 
   if (sendEmailSuccess) {
     return (
@@ -140,9 +150,9 @@ const RegisterPage: NextPageWithLayout = () => {
   return (
     <div className={classes.form}>
       {isTokenError && (
-        <Alert onClose={() => setToken(null)} severity="error">邮箱验证链接已失效，请重试。</Alert>
+        <Alert onClose={() => setToken(null)} severity="error">邮箱验证链接已失效，请重试</Alert>
       )}
-      {!token ? (
+      {!token || isTokenError ? (
         <form onSubmit={onValidateEmailSubmit} className={classes.form}>
           <TextField
             variant="outlined"
@@ -308,7 +318,12 @@ const RegisterPage: NextPageWithLayout = () => {
 };
 
 RegisterPage.getLayout = (page: ReactElement): ReactNode => (
-  <SignInLayout>{page}</SignInLayout>
+  <SignInLayout>
+    <>
+      <Title title="注册帐号" />
+      {page}
+    </>
+  </SignInLayout>
 );
 
 export default RegisterPage;
