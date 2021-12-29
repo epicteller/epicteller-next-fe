@@ -4,7 +4,6 @@ import {
   Avatar,
   Button,
   ButtonBase,
-  ClickAwayListener,
   Container,
   Grow,
   IconButton,
