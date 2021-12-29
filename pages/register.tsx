@@ -23,7 +23,7 @@ import useMe from '../hooks/me';
 import { ValidationErrorResponse } from '../types/errors/validation';
 import epAPI from '../lib/api';
 import { extractValidationError } from '../lib/error';
-import SignInLayout from '../components/layout/SignIn';
+import SignInLayout from '../layouts/SignIn';
 import Title from '../components/title';
 
 const useStyles = makeStyles(() => {

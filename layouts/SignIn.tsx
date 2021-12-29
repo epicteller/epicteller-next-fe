@@ -1,7 +1,7 @@
 import { makeStyles } from '@mui/styles';
 import { Grid, Paper, useTheme } from '@mui/material';
 import { ReactElement } from 'react';
-import { LayoutProps } from '../../types/layout';
+import { LayoutProps } from '../types/layout';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();

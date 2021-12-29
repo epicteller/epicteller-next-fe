@@ -1,7 +1,8 @@
 import type { NextPage } from 'next';
 import useMe from '../hooks/me';
 import SignInPage from './signin';
-import SimpleLayout from '../components/layout/Simple';
+import SimpleLayout from '../layouts/Simple';
+import MyCampaignsList from '../components/Home/MyCampaignsList';
 
 const Home: NextPage = () => {
   const { me } = useMe();
@@ -9,7 +10,7 @@ const Home: NextPage = () => {
     me
       ? (
         <SimpleLayout>
-          <h1>{`Hello! ${me.name}`}</h1>
+          <MyCampaignsList />
         </SimpleLayout>
       )
       : <SignInPage />

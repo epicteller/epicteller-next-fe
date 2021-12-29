@@ -70,15 +70,14 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
   const router = useRouter();
   const { me, mutate } = useMe();
   const chipRef = useRef(null);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const open = !!anchorEl;
+  const [open, setOpen] = useState(false);
 
   const handleMenuOpen = () => {
-    setAnchorEl(chipRef.current);
+    setOpen(true);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setOpen(false);
   };
 
   const logout = async () => {
@@ -92,9 +91,11 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
       <AppBar className={classes.appBar} position="fixed">
         <Container maxWidth="lg">
           <Toolbar disableGutters>
-            <IconButton edge="start" color="inherit" component={NextLink} href="/">
-              <DoubleArrowIcon />
-            </IconButton>
+            <NextLink href="/">
+              <IconButton edge="start" color="inherit">
+                <DoubleArrowIcon />
+              </IconButton>
+            </NextLink>
             <Typography className={classes.title} variant="h6">{title}</Typography>
             {me ? (
               <ButtonBase
@@ -108,7 +109,7 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
                 <Typography variant="subtitle1">{me?.name}</Typography>
               </ButtonBase>
             ) : (
-              <Button component={NextLink} href="/">登录</Button>
+              <NextLink href="/"><Button>登录</Button></NextLink>
             )}
           </Toolbar>
         </Container>
@@ -118,30 +119,29 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
         onMouseLeave={handleMenuClose}
         className={classes.popper}
         open={open}
-        anchorEl={anchorEl}
+        anchorEl={chipRef.current}
         role={undefined}
         transition
         disablePortal
       >
-        {({ TransitionProps, placement }) => (
+        {({ TransitionProps }) => (
           <Grow
             // eslint-disable-next-line react/jsx-props-no-spreading
             {...TransitionProps}
-            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
           >
             <Paper className={classes.menu} elevation={6}>
-              <ClickAwayListener onClickAway={handleMenuClose}>
-                <MenuList>
-                  <MenuItem component={NextLink} href="/settings">
+              <MenuList>
+                <NextLink href="/settings">
+                  <MenuItem>
                     <ListItemIcon><SettingsIcon /></ListItemIcon>
                     设置
                   </MenuItem>
-                  <MenuItem component={ButtonBase} onClick={logout}>
-                    <ListItemIcon><ExitToAppIcon /></ListItemIcon>
-                    退出登录
-                  </MenuItem>
-                </MenuList>
-              </ClickAwayListener>
+                </NextLink>
+                <MenuItem component={ButtonBase} onClick={logout}>
+                  <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+                  退出登录
+                </MenuItem>
+              </MenuList>
             </Paper>
           </Grow>
         )}

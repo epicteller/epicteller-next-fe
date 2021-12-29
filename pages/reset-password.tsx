@@ -8,7 +8,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import useMe from '../hooks/me';
 import epAPI from '../lib/api';
-import SignInLayout from '../components/layout/SignIn';
+import SignInLayout from '../layouts/SignIn';
 import { NextPageWithLayout } from '../types/layout';
 import { ValidationErrorResponse } from '../types/errors/validation';
 import useNotifier from '../hooks/notifier';

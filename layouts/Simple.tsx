@@ -1,8 +1,8 @@
-import { Container } from '@mui/material';
-import { makeStyles, useTheme } from '@mui/styles';
+import { Container, useTheme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { ReactElement } from 'react';
-import { LayoutProps } from '../../types/layout';
-import NavBar from '../NavBar';
+import { LayoutProps } from '../types/layout';
+import NavBar from '../components/NavBar';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();

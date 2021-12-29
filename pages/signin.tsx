@@ -7,7 +7,7 @@ import { LockOutlined, MailOutlined } from '@mui/icons-material';
 import NextLink from 'next/link';
 import useMe from '../hooks/me';
 import epAPI from '../lib/api';
-import SignInLayout from '../components/layout/SignIn';
+import SignInLayout from '../layouts/SignIn';
 import { NextPageWithLayout } from '../types/layout';
 
 const useStyles = makeStyles(() => {
