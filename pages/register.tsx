@@ -24,7 +24,7 @@ import { ValidationErrorResponse } from '../types/errors/validation';
 import epAPI from '../lib/api';
 import { extractValidationError } from '../lib/error';
 import SignInLayout from '../layouts/SignIn';
-import Title from '../components/title';
+import Title from '../components/util/title';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();

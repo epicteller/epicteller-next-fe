@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import useMe from '../hooks/me';
 import SignInPage from './signin';
-import SimpleLayout from '../layouts/Simple';
+import BasicLayout from '../layouts';
 import MyCampaignsList from '../components/Home/MyCampaignsList';
 
 const Home: NextPage = () => {
@@ -9,9 +9,9 @@ const Home: NextPage = () => {
   return (
     me
       ? (
-        <SimpleLayout>
+        <BasicLayout>
           <MyCampaignsList />
-        </SimpleLayout>
+        </BasicLayout>
       )
       : <SignInPage />
   );

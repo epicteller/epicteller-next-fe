@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => {
   };
 });
 
-const SimpleLayout = ({ children }: LayoutProps): ReactElement => {
+const BasicLayout = ({ children }: LayoutProps): ReactElement => {
   const classes = useStyles();
   return (
     <>
@@ -26,4 +26,4 @@ const SimpleLayout = ({ children }: LayoutProps): ReactElement => {
   );
 };
 
-export default SimpleLayout;
+export default BasicLayout;

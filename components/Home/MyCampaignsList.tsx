@@ -20,7 +20,7 @@ import { Add as AddIcon } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 import NextLink from 'next/link';
 import useSWR from 'swr';
-import TimeChip from '../TimeChip';
+import TimeChip from '../util/TimeChip';
 import MemberChip from '../Member/MemberChip';
 import CampaignListSkeleton from '../Skeleton/CampaignListSkeleton';
 import useMe from '../../hooks/me';
