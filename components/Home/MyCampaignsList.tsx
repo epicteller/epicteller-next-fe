@@ -24,7 +24,7 @@ import TimeChip from '../TimeChip';
 import MemberChip from '../Member/MemberChip';
 import CampaignListSkeleton from '../Skeleton/CampaignListSkeleton';
 import useMe from '../../hooks/me';
-import { Campaign, MyCampaignsListResponse } from '../../types/campaign';
+import { MyCampaignsListResponse } from '../../types/campaign';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();
@@ -54,6 +54,9 @@ const useStyles = makeStyles(() => {
     MenuDivider: {
       margin: theme.spacing(2, 0),
     },
+    fallbackHint: {
+      marginTop: theme.spacing(2),
+    },
   };
 });
 
@@ -62,7 +65,7 @@ const MyCampaignsList = () => {
   const classes = useStyles();
   const { data: response, error, mutate } = useSWR<MyCampaignsListResponse>('/me/campaigns');
   const campaigns = response?.data ?? [];
-  const isLoading = !campaigns && !error;
+  const isLoading = !response && !error;
 
   return (
     <Paper className={classes.paper}>
@@ -141,36 +144,52 @@ const MyCampaignsList = () => {
             </Grid>
           ))}
           {error && (
-            <Grid container direction="column" justifyContent="center" alignItems="center">
+            <Grid
+              className={classes.fallbackHint}
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              spacing={1}
+            >
               <Grid item>
-                <Typography variant="h2">💣</Typography>
+                <Typography variant="h2">😰</Typography>
               </Grid>
               <Grid item>
                 <Typography variant="h6">
-                  出错了，
-                  <Button variant="text" onClick={() => mutate()}>刷新</Button>
-                  一下试试？
+                  加载失败
                 </Typography>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" size="small" onClick={() => mutate()}>重试</Button>
               </Grid>
             </Grid>
           )}
-          {!isLoading && campaigns && campaigns.length === 0 && (
-            <Grid container direction="column" justifyContent="center" alignItems="center">
+          {!isLoading && !error && campaigns && campaigns.length === 0 && (
+            <Grid
+              className={classes.fallbackHint}
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              spacing={1}
+            >
               <Grid item>
                 <Typography variant="h2">🤔</Typography>
               </Grid>
               <Grid item>
                 <Typography variant="h6">
-                  看起来你还没有参与过战役
-                  {!me?.externalInfo?.qq && (
+                  {me?.externalInfo ? (
+                    '看起来你还没有参与过战役'
+                  ) : (
                     <>
-                      <Typography variant="inherit">，不如先</Typography>
-                      <Link component={NextLink} href="/settings/external">
-                        去绑定
-                      </Link>
-                      <Typography variant="inherit">
-                        一下外部帐号？
-                      </Typography>
+                      看起来你还没有参与过战役，不如先
+                      <NextLink href="/settings/external">
+                        <Link variant="inherit" href="/settings/external">
+                          去绑定
+                        </Link>
+                      </NextLink>
+                      一下外部帐号？
                     </>
                   )}
                 </Typography>
