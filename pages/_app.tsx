@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import ThemeProvider from '../components/theme';
 import APIProvider from '../components/api';
 import { NextPageWithLayout } from '../types/layout';
+import TopProgressBar from '../components/util/PageProgress';
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
@@ -23,6 +24,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   }, []);
   return (
     <>
+      <TopProgressBar />
       <Head>
         <title>Epicteller (Alpha)</title>
       </Head>

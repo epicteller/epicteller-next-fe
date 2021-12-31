@@ -8,6 +8,7 @@ import useNotifier from '../../hooks/notifier';
 import useMe from '../../hooks/me';
 import { NextPageWithLayout } from '../../types/layout';
 import SettingsLayout from '../../layouts/Settings';
+import Title from '../../components/util/Title';
 
 interface uploadResponse {
   token: string

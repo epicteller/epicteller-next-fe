@@ -130,7 +130,7 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
           >
             <Paper className={classes.menu} elevation={6}>
               <MenuList>
-                <NextLink href="/settings">
+                <NextLink href="/settings/profile">
                   <MenuItem>
                     <ListItemIcon><SettingsIcon /></ListItemIcon>
                     设置

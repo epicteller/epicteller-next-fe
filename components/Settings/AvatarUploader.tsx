@@ -23,6 +23,7 @@ import numeral from 'numeral';
 import ReactCrop, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { makeStyles } from '@mui/styles';
+import useNotifier from '../../hooks/notifier';
 
 export interface AvatarUploaderProps {
   src?: string
@@ -78,7 +79,7 @@ const Cropper = ({
   const classes = useStyles();
   const imgRef = useRef<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [currentCrop, setCurrentCrop] = useState<Crop>({ unit: '%', x: 35, y: 35, width: 30, height: 30, aspect: 1 });
+  const [currentCrop, setCurrentCrop] = useState<Partial<Crop>>({ unit: '%', x: 35, y: 35, width: 30, aspect: 1 });
   const [completedCrop, setCompletedCrop] = useState<Crop | null>(null);
   const [preview, setPreview] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -87,7 +88,7 @@ const Cropper = ({
     imgRef.current = img;
   }, []);
 
-  const canvasToPreview = async () => {
+  const canvasToPreview = () => {
     const url = canvasRef?.current?.toDataURL();
     if (!url) {
       return;
@@ -193,8 +194,8 @@ const Cropper = ({
 const AvatarUploader = ({ onUpload, src, alt, maxSizeBytes = 1048576 }: AvatarUploaderProps) => {
   const classes = useStyles();
   const fileInput = useRef<HTMLInputElement>(null);
+  const { notifyError } = useNotifier();
 
-  const [fileError, setFileError] = useState('');
   const [selectedImageData, setSelectedImageData] = useState('');
   const [cropperOpen, setCropperOpen] = useState(false);
 
@@ -203,10 +204,6 @@ const AvatarUploader = ({ onUpload, src, alt, maxSizeBytes = 1048576 }: AvatarUp
   };
 
   const selectImg = (file: File) => {
-    if (file.size > maxSizeBytes) {
-      setFileError(`图片大小不能超过 ${numeral(maxSizeBytes).format('0.0 b')}`);
-      return;
-    }
     const reader = new FileReader();
     reader.addEventListener('load', () => {
       setSelectedImageData(reader.result as string);
@@ -242,7 +239,15 @@ const AvatarUploader = ({ onUpload, src, alt, maxSizeBytes = 1048576 }: AvatarUp
   };
 
   const onComplete = async (dataURL: string) => {
-    await onUpload(dataURL);
+    if (dataURL.length > maxSizeBytes) {
+      notifyError(`图片大小不能超过 ${numeral(maxSizeBytes).format('0.0 b')}`);
+      return;
+    }
+    try {
+      await onUpload(dataURL);
+    } catch {
+      return;
+    }
     setCropperOpen(false);
     fileInput!.current!.value = '';
   };
@@ -298,11 +303,6 @@ const AvatarUploader = ({ onUpload, src, alt, maxSizeBytes = 1048576 }: AvatarUp
           {alt && alt[0]}
         </Avatar>
       </Badge>
-      <Collapse in={!!fileError}>
-        <Alert className={classes.alert} severity="error" onClose={() => setFileError('')}>
-          {fileError}
-        </Alert>
-      </Collapse>
     </>
   );
 };
