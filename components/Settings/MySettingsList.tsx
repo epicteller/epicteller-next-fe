@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
+import { List, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import React, { useEffect } from 'react';
 import { Link as LinkIcon, Person as PersonIcon, Security as SecurityIcon } from '@mui/icons-material';
 import { useRouter } from 'next/router';
@@ -14,13 +14,12 @@ const MenuItem = ({ children, to, style }: menuItemProps) => {
   const router = useRouter();
   return (
     <NextLink href={to}>
-      <ListItem
-        button
+      <ListItemButton
         selected={router.pathname === to}
         style={style}
       >
         {children}
-      </ListItem>
+      </ListItemButton>
     </NextLink>
   );
 };
