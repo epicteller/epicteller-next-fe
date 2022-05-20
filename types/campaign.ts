@@ -1,5 +1,6 @@
 import { Character } from './character';
 import { Member } from './member';
+import { Combat } from './combat';
 
 export interface MyCampaignsListResponse {
   data: Campaign[]
@@ -16,6 +17,7 @@ export interface Campaign {
   updated: number
   characters?: Character[]
   relationship?: CampaignRelationship
+  runningCombat?: Combat
 }
 
 export interface CampaignRelationship {

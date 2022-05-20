@@ -4,7 +4,6 @@ import NavBar from '../components/NavBar';
 
 const CampaignLayout = ({ children }: LayoutProps): ReactElement => (
   <>
-    <NavBar />
     {children}
   </>
 );

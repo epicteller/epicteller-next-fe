@@ -1,13 +1,27 @@
-/** @type {import('next').NextConfig} */
-module.exports = {
-  reactStrictMode: true,
-  poweredByHeader: false,
-  async rewrites() {
-    return [
-      {
-        source: '/api/:slug*',
-        destination: 'http://127.0.0.1:8000/:slug*',
+const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
+
+module.exports = (phase, { defaultConfig }) => {
+  const config = {
+    ...defaultConfig,
+    reactStrictMode: true,
+    poweredByHeader: false,
+    images: {
+      domains: ['img.epicteller.com'],
+    },
+    experimental: {
+      images: {
+        layoutRaw: true,
       },
+    },
+  };
+
+  if (phase === PHASE_DEVELOPMENT_SERVER) {
+    config.rewrites = async () => [{
+      source: '/api/:slug*',
+      destination: 'http://127.0.0.1:8000/:slug*',
+    },
     ];
-  },
+  }
+
+  return config;
 };

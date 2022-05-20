@@ -1,36 +1,17 @@
+import { Member } from './member';
+
 export interface Character {
   id: string
+  member?: Member
   name: string
   avatar?: string
+  description?: string
+  rawData?: object
+  created?: number
+  updated?: number
+  relationship?: CharacterRelationship
 }
 
-export interface CombatToken {
-  name: string
-  initiative?: number
-  character?: Character
-}
-
-export interface CombatOrder {
-  order: Array<CombatToken>
-  currentToken?: CombatToken
-  roundCount: number
-}
-
-export enum CombatState {
-  INITIATING = 'initiating',
-  RUNNING = 'running',
-  ENDED = 'ended',
-}
-
-export interface Combat {
-  id: string
-  state: CombatState
-  isRemoved: boolean
-  tokens: { [tokenName: string]: CombatToken }
-  order: CombatOrder
-  data: object
-  startedAt: number
-  endedAt?: number
-  created: number
-  updated: number
+export interface CharacterRelationship {
+  isOwner?: boolean
 }

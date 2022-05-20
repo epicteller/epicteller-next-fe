@@ -3,6 +3,7 @@ import useMe from '../hooks/me';
 import SignInPage from './signin';
 import BasicLayout from '../layouts';
 import MyCampaignsList from '../components/Home/MyCampaignsList';
+import Title from '../components/util/Title';
 
 const Home: NextPage = () => {
   const { me } = useMe();
@@ -10,7 +11,10 @@ const Home: NextPage = () => {
     me
       ? (
         <BasicLayout>
-          <MyCampaignsList />
+          <>
+            <Title title="首页" />
+            <MyCampaignsList />
+          </>
         </BasicLayout>
       )
       : <SignInPage />

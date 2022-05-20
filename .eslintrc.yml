@@ -32,3 +32,10 @@ rules:
   max-len: [ 'error', 120, 2, { 'ignoreComments': true, 'ignoreStrings': true } ]
   react/jsx-props-no-spreading: off
   react/function-component-definition: off
+
+overrides:
+  - files:
+      - '*.ts'
+      - '*.tsx'
+    rules:
+      no-undef: off

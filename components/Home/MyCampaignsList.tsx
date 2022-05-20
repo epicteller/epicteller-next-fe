@@ -33,6 +33,9 @@ const useStyles = makeStyles(() => {
       padding: theme.spacing(2, 3, 4, 3),
     },
     description: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
     creatorDesc: {
       display: 'flex',
@@ -72,74 +75,87 @@ const MyCampaignsList = () => {
       <Grid container direction="column">
         <Grid container justifyContent="space-between" alignItems="center">
           <Typography variant="h6">我参与的战役</Typography>
-          <Tooltip title="咕咕咕.jpg">
+          <NextLink href="/campaign/create">
             <Button variant="contained" color="primary">
               <AddIcon />
               创建新战役
             </Button>
-          </Tooltip>
+          </NextLink>
         </Grid>
         <Divider className={classes.MenuDivider} />
         <Grid container item spacing={3}>
           {!isLoading && campaigns && campaigns.map((campaign) => (
             <Grid key={campaign.id} item xs sm={6} md={3}>
               <Card elevation={3}>
-                <NextLink href={`/campaign/${campaign.id}`}>
-                  <CardActionArea>
-                    <CardContent>
-                      <Typography className={classes.creatorDesc} noWrap gutterBottom variant="body2" color="textSecondary">
-                        由
-                        <MemberChip human={campaign.owner} />
-                        创建于
-                        <TimeChip timestamp={campaign.created} />
+                <CardActionArea href={`/campaign/${campaign.id}`} target="_blank">
+                  <CardContent>
+                    <Typography
+                      className={classes.creatorDesc}
+                      noWrap
+                      gutterBottom
+                      variant="body2"
+                      color="textSecondary"
+                    >
+                      由
+                      <MemberChip human={campaign.owner} />
+                      创建于
+                      <TimeChip timestamp={campaign.created} textType="relativeOrDate" />
+                    </Typography>
+                    <Typography noWrap variant="h6">{campaign.name}</Typography>
+                    {campaign.description ? (
+                      <Typography
+                        className={classes.description}
+                        noWrap
+                        paragraph
+                        variant="body2"
+                        color="textSecondary"
+                      >
+                        {campaign.description}
                       </Typography>
-                      <Typography noWrap variant="h6">{campaign.name}</Typography>
-                      {campaign.description ? (
-                        <Typography className={classes.description} noWrap paragraph variant="body2" color="textSecondary">
-                          {campaign.description}
-                        </Typography>
-                      ) : (
-                        <Typography className={classes.noDescription} noWrap paragraph variant="body2" color="textSecondary">
-                          无描述
-                        </Typography>
-                      )}
-                      <Grid container justifyContent="space-between" alignItems="center">
-                        <AvatarGroup className={classes.charactersGroup} max={5} spacing="medium">
-                          {campaign.characters?.map((character) => (
-                            <Tooltip key={character.id} title={character.name}>
-                              <Avatar
-                                className={classes.characters}
-                                src={character.avatar}
-                              >
-                                <Typography variant="caption" color="textSecondary">
-                                  {character.name[0]}
-                                </Typography>
-                              </Avatar>
-                            </Tooltip>
-                          ))}
-                        </AvatarGroup>
-                        {campaign.relationship?.isGm && (
+                    ) : (
+                      <Typography
+                        className={classes.noDescription}
+                        noWrap
+                        paragraph
+                        variant="body2"
+                        color="textSecondary"
+                      >
+                        无描述
+                      </Typography>
+                    )}
+                    <Grid container justifyContent="space-between" alignItems="center">
+                      <AvatarGroup className={classes.charactersGroup} max={5} spacing="medium">
+                        {campaign.characters?.map((character) => (
+                          <Tooltip key={character.id} title={character.name}>
+                            <Avatar
+                              className={classes.characters}
+                              src={character.avatar}
+                            >
+                              <Typography variant="caption" color="textSecondary">
+                                {character.name[0]}
+                              </Typography>
+                            </Avatar>
+                          </Tooltip>
+                        ))}
+                      </AvatarGroup>
+                      {campaign.relationship?.isGm && (
                         <Chip size="small" label="DM" />
-                        )}
-                        {!campaign.relationship?.isGm && campaign.relationship?.usingCharacter && (
-                          <NextLink href={`/character/${campaign.relationship?.usingCharacter?.id}`}>
-                            <Tooltip title="查看角色">
-                              <Chip
-                                size="small"
-                                avatar={(
-                                  <Avatar src={campaign.relationship?.usingCharacter?.avatar}>
-                                    {campaign.relationship?.usingCharacter?.name[0]}
-                                  </Avatar>
-                              )}
-                                label={campaign.relationship?.usingCharacter?.name}
-                              />
-                            </Tooltip>
-                          </NextLink>
-                        )}
-                      </Grid>
-                    </CardContent>
-                  </CardActionArea>
-                </NextLink>
+                      )}
+                      {!campaign.relationship?.isGm && campaign.relationship?.usingCharacter && (
+                        <Chip
+                          sx={{ maxWidth: 100, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+                          size="small"
+                          avatar={(
+                            <Avatar src={campaign.relationship?.usingCharacter?.avatar}>
+                              {campaign.relationship?.usingCharacter?.name[0]}
+                            </Avatar>
+                          )}
+                          label={campaign.relationship?.usingCharacter?.name}
+                        />
+                      )}
+                    </Grid>
+                  </CardContent>
+                </CardActionArea>
               </Card>
             </Grid>
           ))}

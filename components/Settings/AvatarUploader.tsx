@@ -1,10 +1,10 @@
 import {
   Avatar,
   Badge,
+  Box,
   Button,
   ButtonBase,
   CircularProgress,
-  Collapse,
   Container,
   Dialog,
   DialogActions,
@@ -16,24 +16,28 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PhotoCamera as PhotoCameraIcon } from '@mui/icons-material';
-import { Alert } from '@mui/lab';
 import numeral from 'numeral';
 import ReactCrop, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { makeStyles } from '@mui/styles';
+import { useMeasure } from 'react-use';
 import useNotifier from '../../hooks/notifier';
+import ScrollBar from '../util/ScrollBar';
 
 export interface AvatarUploaderProps {
   src?: string
   alt?: string
   maxSizeBytes?: number
-  onUpload: (dataURL: string) => void
+  onUpload?: (dataURL: string) => void
+  readOnly?: boolean
 }
 
 export interface CropperProps {
   src: string
+  height: number
+  width: number
   onComplete: (dataURL: string) => void
   open?: boolean
   onCancel?: () => void
@@ -72,21 +76,32 @@ const useStyles = makeStyles(() => {
   };
 });
 
+const initialCrop: (windowWidth: number, windowHeight: number, width: number, height: number) => Crop = (
+  windowWidth,
+  windowHeight,
+) => {
+  const shorter = Math.min(windowWidth, windowHeight);
+  return {
+    unit: 'px',
+    x: 0,
+    y: 0,
+    width: shorter * 0.3,
+    height: shorter * 0.3,
+  };
+};
+
 const Cropper = ({
-  src, open = false, onComplete, onCancel = () => {
+  src, width, height, open = false, onComplete, onCancel = () => {
   },
 }: CropperProps) => {
   const classes = useStyles();
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const [windowRef, { width: windowWidth, height: windowHeight }] = useMeasure();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [currentCrop, setCurrentCrop] = useState<Partial<Crop>>({ unit: '%', x: 35, y: 35, width: 30, aspect: 1 });
+  const [currentCrop, setCurrentCrop] = useState<Crop>(initialCrop(windowWidth, windowHeight, width, height));
   const [completedCrop, setCompletedCrop] = useState<Crop | null>(null);
   const [preview, setPreview] = useState('');
   const [uploading, setUploading] = useState(false);
-
-  const onLoad = useCallback((img) => {
-    imgRef.current = img;
-  }, []);
 
   const canvasToPreview = () => {
     const url = canvasRef?.current?.toDataURL();
@@ -95,6 +110,10 @@ const Cropper = ({
     }
     setPreview(url);
   };
+
+  useEffect(() => {
+    setCurrentCrop(initialCrop(windowWidth, windowHeight, width, height));
+  }, [windowWidth, windowHeight, width, height]);
 
   useEffect(() => {
     if (!completedCrop || !canvasRef.current || !imgRef.current) {
@@ -126,7 +145,7 @@ const Cropper = ({
       crop.height!,
     );
     canvasToPreview();
-  }, [completedCrop]);
+  }, [completedCrop, src]);
 
   const onUploadBtnClick = async () => {
     setUploading(true);
@@ -145,30 +164,38 @@ const Cropper = ({
   };
 
   return (
-    <Dialog open={open} onClose={onDialogClose} maxWidth="md">
+    <Dialog open={open} onClose={onDialogClose} maxWidth="lg">
       <DialogTitle>上传头像</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ overflow: 'hidden' }}>
         <Grid container spacing={3}>
           <Grid item xs sm={8}>
-            <Typography variant="subtitle2" gutterBottom>裁剪</Typography>
-            <ReactCrop
-              src={src}
-              onImageLoaded={onLoad}
-              imageStyle={{ width: '100%' }}
-              crop={currentCrop}
-              onChange={(c) => setCurrentCrop(c)}
-              onComplete={(c) => setCompletedCrop(c)}
-              circularCrop
-              keepSelection
-            />
+            <Box ref={windowRef}>
+              <Typography variant="subtitle2" gutterBottom>裁剪</Typography>
+              <ScrollBar
+                style={{ maxHeight: '75vh', overflowX: 'hidden' }}
+                options={{
+                  overflowBehavior: { x: 'hidden' },
+                }}
+              >
+                <ReactCrop
+                  aspect={1}
+                  crop={currentCrop}
+                  onChange={(c) => setCurrentCrop(c)}
+                  onComplete={(c) => setCompletedCrop(c)}
+                  circularCrop
+                  keepSelection
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={src} ref={imgRef} alt="图片" />
+                </ReactCrop>
+              </ScrollBar>
+            </Box>
           </Grid>
           <Grid item xs sm={4}>
-            <Container>
-              <Typography variant="subtitle2" gutterBottom>预览</Typography>
-              <Avatar className={classes.avatar} src={preview} />
-              <Avatar className={classes.avatarMedium} src={preview} />
-              <Avatar src={preview} />
-            </Container>
+            <Typography variant="subtitle2" gutterBottom>预览</Typography>
+            <Avatar className={classes.avatar} src={preview} />
+            <Avatar className={classes.avatarMedium} src={preview} />
+            <Avatar src={preview} />
           </Grid>
         </Grid>
       </DialogContent>
@@ -191,12 +218,14 @@ const Cropper = ({
   );
 };
 
-const AvatarUploader = ({ onUpload, src, alt, maxSizeBytes = 1048576 }: AvatarUploaderProps) => {
+const AvatarUploader = ({ onUpload, src, alt, readOnly = false, maxSizeBytes = 10 * 1048576 }: AvatarUploaderProps) => {
   const classes = useStyles();
   const fileInput = useRef<HTMLInputElement>(null);
   const { notifyError } = useNotifier();
 
   const [selectedImageData, setSelectedImageData] = useState('');
+  const [imageWidth, setImageWidth] = useState(0);
+  const [imageHeight, setImageHeight] = useState(0);
   const [cropperOpen, setCropperOpen] = useState(false);
 
   const onButtonClick = () => {
@@ -207,6 +236,12 @@ const AvatarUploader = ({ onUpload, src, alt, maxSizeBytes = 1048576 }: AvatarUp
     const reader = new FileReader();
     reader.addEventListener('load', () => {
       setSelectedImageData(reader.result as string);
+      const img = new Image();
+      img.src = reader.result as string;
+      img.onload = () => {
+        setImageWidth(img.width);
+        setImageHeight(img.height);
+      };
       setCropperOpen(true);
     });
     reader.readAsDataURL(file);
@@ -244,7 +279,9 @@ const AvatarUploader = ({ onUpload, src, alt, maxSizeBytes = 1048576 }: AvatarUp
       return;
     }
     try {
-      await onUpload(dataURL);
+      if (onUpload) {
+        await onUpload(dataURL);
+      }
     } catch {
       return;
     }
@@ -252,10 +289,24 @@ const AvatarUploader = ({ onUpload, src, alt, maxSizeBytes = 1048576 }: AvatarUp
     fileInput!.current!.value = '';
   };
 
+  if (readOnly) {
+    return (
+      <Avatar
+        className={classes.avatar}
+        alt={alt}
+        src={src}
+      >
+        {alt && alt[0]}
+      </Avatar>
+    );
+  }
+
   return (
     <>
       <Cropper
         src={selectedImageData}
+        width={imageWidth}
+        height={imageHeight}
         open={cropperOpen}
         onComplete={onComplete}
         onCancel={() => {

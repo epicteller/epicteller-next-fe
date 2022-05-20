@@ -24,6 +24,7 @@ import {
 } from '@mui/icons-material';
 import NextLink from 'next/link';
 import Popper from '@mui/material/Popper';
+import { useMount } from 'react-use';
 import useMe from '../hooks/me';
 import epAPI from '../lib/api';
 
@@ -31,12 +32,6 @@ const useStyles = makeStyles(() => {
   const theme = useTheme();
   return {
     appBar: {
-      paddingTop: 'env(safe-area-inset-top)',
-      paddingLeft: 'env(safe-area-inset-left)',
-      paddingRight: 'env(safe-area-inset-right)',
-    },
-    appBarSpacer: {
-      ...theme.mixins.toolbar,
       paddingTop: 'env(safe-area-inset-top)',
       paddingLeft: 'env(safe-area-inset-left)',
       paddingRight: 'env(safe-area-inset-right)',
@@ -70,6 +65,8 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
   const { me, mutate } = useMe();
   const chipRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useMount(() => setMounted(true));
 
   const handleMenuOpen = () => {
     setOpen(true);
@@ -96,9 +93,10 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
               </IconButton>
             </NextLink>
             <Typography className={classes.title} variant="h6">{title}</Typography>
-            {me ? (
+            {mounted && me ? (
               <ButtonBase
                 ref={chipRef}
+                color="inherit"
                 className={classes.memberChip}
                 onClick={handleMenuOpen}
                 onMouseEnter={handleMenuOpen}
@@ -144,10 +142,8 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
             </Paper>
           </Grow>
         )}
-
       </Popper>
-
-      <div className={classes.appBarSpacer} />
+      <Toolbar />
     </>
   );
 };

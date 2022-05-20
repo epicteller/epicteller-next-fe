@@ -8,12 +8,7 @@ import useNotifier from '../../hooks/notifier';
 import useMe from '../../hooks/me';
 import { NextPageWithLayout } from '../../types/layout';
 import SettingsLayout from '../../layouts/Settings';
-import Title from '../../components/util/Title';
-
-interface uploadResponse {
-  token: string
-  url: string
-}
+import { UploadResponse } from '../../types/upload';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();
@@ -62,7 +57,7 @@ const MyProfileSettingsPage: NextPageWithLayout = () => {
     const data = dataURL.replace(/^data:image\/\w+;base64,/, '');
     try {
       const response = await epAPI.post('/image-upload', { data });
-      const avatarInfo = response.data as uploadResponse;
+      const avatarInfo = response.data as UploadResponse;
       await epAPI.put('/me', { avatar: avatarInfo.token });
       setAvatarURL(dataURL);
       await mutate();

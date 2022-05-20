@@ -24,7 +24,6 @@ import epAPI from '../../lib/api';
 import useNotifier from '../../hooks/notifier';
 import useMe from '../../hooks/me';
 import SettingsLayout from '../../layouts/Settings';
-import Title from '../../components/util/Title';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();

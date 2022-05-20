@@ -1,8 +1,10 @@
 import { Container, useTheme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ReactElement } from 'react';
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import { LayoutProps } from '../types/layout';
 import NavBar from '../components/NavBar';
+import 'overlayscrollbars/css/OverlayScrollbars.css';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();
@@ -19,9 +21,16 @@ const BasicLayout = ({ children }: LayoutProps): ReactElement => {
   return (
     <>
       <NavBar />
-      <Container className={classes.container} maxWidth="lg">
-        {children}
-      </Container>
+      <OverlayScrollbarsComponent
+        className="os-theme-light"
+        options={{
+          updateOnLoad: null,
+        }}
+      >
+        <Container className={classes.container} maxWidth="lg">
+          {children}
+        </Container>
+      </OverlayScrollbarsComponent>
     </>
   );
 };

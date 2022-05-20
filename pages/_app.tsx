@@ -26,7 +26,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
     <>
       <TopProgressBar />
       <Head>
-        <title>Epicteller (Alpha)</title>
+        <title>Epicteller</title>
       </Head>
       <ThemeProvider>
         <SnackbarProvider maxSnack={5}>
