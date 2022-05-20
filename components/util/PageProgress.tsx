@@ -7,5 +7,5 @@ Router.events.on('routeChangeError', nProgress.done);
 Router.events.on('routeChangeComplete', nProgress.done);
 
 export default function () {
-  return;
+  return null;
 };
