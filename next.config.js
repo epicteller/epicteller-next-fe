@@ -1,4 +1,9 @@
-const { PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_SERVER } = require('next/constants');
+const {
+  PHASE_DEVELOPMENT_SERVER,
+  PHASE_PRODUCTION_SERVER,
+  PHASE_EXPORT,
+  PHASE_PRODUCTION_BUILD,
+} = require('next/constants');
 
 module.exports = (phase, { defaultConfig }) => {
   const config = {
@@ -24,7 +29,7 @@ module.exports = (phase, { defaultConfig }) => {
     ];
   }
 
-  if (phase === PHASE_PRODUCTION_SERVER) {
+  if (phase === PHASE_PRODUCTION_SERVER || phase === PHASE_PRODUCTION_BUILD || phase === PHASE_EXPORT) {
     config.rewrites = async () => [{
       source: '/api/:slug*',
       destination: 'https://api.epicteller.com/:slug*',

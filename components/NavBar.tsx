@@ -77,9 +77,14 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
   };
 
   const logout = async () => {
-    await epAPI.post('/logout');
-    await mutate();
-    await router.push({ pathname: '/' });
+    try {
+      await epAPI.post('/logout');
+    } catch (e) {
+      // ignore
+    } finally {
+      await mutate();
+      await router.push({ pathname: '/' });
+    }
   };
 
   return (
