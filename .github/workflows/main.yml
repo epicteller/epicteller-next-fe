@@ -29,13 +29,11 @@ jobs:
         uses: timheuer/base64-to-file@v1.1
         with:
           filename: .env
-          fileDir: ${{ env.GITHUB_WORKSPACE }}
+          fileDir: './'
           encodedString: ${{ secrets.ENV_FILE_B64 }}
 
       - name: Build project
         run: yarn && yarn build
-        env:
-          GENERATE_SOURCEMAP: 'false'
 
       - name: Upload COS
         uses: KawashiroNitori/tencent-cos-action@endpoint-support

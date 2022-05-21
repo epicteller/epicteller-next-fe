@@ -5,11 +5,11 @@ import { FormEvent, useState } from 'react';
 import { AxiosError } from 'axios';
 import { LockOutlined, MailOutlined } from '@mui/icons-material';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import useMe from '../../hooks/me';
 import epAPI from '../../lib/api';
 import SignInLayout from '../../layouts/SignIn';
 import { NextPageWithLayout } from '../../types/layout';
-import Title from '../util/Title';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();
@@ -24,6 +24,7 @@ const useStyles = makeStyles(() => {
 });
 
 const SignInPage: NextPageWithLayout = () => {
+  const router = useRouter();
   const classes = useStyles();
   const { mutate } = useMe();
   const [email, setEmail] = useState('');
@@ -43,6 +44,8 @@ const SignInPage: NextPageWithLayout = () => {
         email,
         password,
       });
+      mutate();
+      await router.push('/');
     } catch (e) {
       const err = e as AxiosError;
       if (err.response?.status! < 500) {
@@ -50,9 +53,9 @@ const SignInPage: NextPageWithLayout = () => {
       } else {
         setErrorMessage('出错了，请稍后再试');
       }
+    } finally {
+      setIsSubmitting(false);
     }
-    mutate();
-    setIsSubmitting(false);
   };
 
   return (
