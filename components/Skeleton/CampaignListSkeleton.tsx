@@ -1,5 +1,5 @@
 import { Card, CardContent, Grid, Typography } from '@mui/material';
-import { Skeleton } from '@mui/lab';
+import Skeleton from '@mui/material/Skeleton';
 import React from 'react';
 
 export interface PropTypes {

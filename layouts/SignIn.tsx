@@ -2,6 +2,7 @@ import { makeStyles } from '@mui/styles';
 import { Grid, Paper, useTheme } from '@mui/material';
 import { ReactElement } from 'react';
 import { LayoutProps } from '../types/layout';
+import Title from '../components/util/Title';
 
 const useStyles = makeStyles(() => {
   const theme = useTheme();
@@ -38,6 +39,7 @@ const SignInLayout = ({ children }: LayoutProps): ReactElement => {
       alignItems="center"
       className={classes.root}
     >
+      <Title title="登录" />
       <Grid className={classes.paper} item xs={12} md={5} lg={4} xl={3} component={Paper} elevation={12} square>
         {children}
       </Grid>

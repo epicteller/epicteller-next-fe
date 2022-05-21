@@ -15,7 +15,7 @@ module.exports = (phase, { defaultConfig }) => {
     },
   };
 
-  if (phase === PHASE_DEVELOPMENT_SERVER) {
+  if (true || phase === PHASE_DEVELOPMENT_SERVER) {
     config.rewrites = async () => [{
       source: '/api/:slug*',
       destination: 'http://127.0.0.1:8000/:slug*',

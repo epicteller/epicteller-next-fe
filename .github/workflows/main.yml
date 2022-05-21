@@ -25,6 +25,14 @@ jobs:
         with:
           node-version: "17.x"
 
+      - name: Print secrets env
+        run: |
+          echo $DEV_ENV_FILE >> .env
+          cat .env
+        shell: bash
+        env:
+          DEV_ENV_FILE: ${{secrets.ENV_FILE}}
+
       - name: Build project
         run: yarn && yarn build
         env:
