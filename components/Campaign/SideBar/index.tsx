@@ -34,6 +34,7 @@ const SideBarInner = ({
   selectedEpisodeID,
   selectEpisode,
   mutate,
+  width,
 }: episodeSideBarProps) => {
   if (isLoading || !campaign) {
     return (
@@ -54,7 +55,12 @@ const SideBarInner = ({
         </Typography>
       </Toolbar>
       <Divider />
-      <ScrollBar style={{ height: '100%' }}>
+      <ScrollBar
+        style={{ height: '100%', width, overflowX: 'hidden' }}
+        options={{
+          overflowBehavior: { x: 'hidden' },
+        }}
+      >
         <List
           dense
           disablePadding

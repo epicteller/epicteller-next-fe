@@ -107,6 +107,11 @@ const EpisodeItem = ({ campaign, episode, selected, selectEpisode, mutate }: epi
 
   const element = (hovered: boolean) => (
     <ListItem
+      sx={{
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }}
       secondaryAction={hovered && !dialogOpen && isOwner && (
         <IconButton edge="end" size="small" onClick={() => setDialogOpen(true)}>
           <EditIcon />
@@ -115,7 +120,12 @@ const EpisodeItem = ({ campaign, episode, selected, selectEpisode, mutate }: epi
       disablePadding
     >
       <ListItemButton
-        sx={{ pl: 4 }}
+        sx={{
+          pl: 4,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
         selected={selected}
         onClick={() => !selected && selectEpisode(episode.id)}
       >

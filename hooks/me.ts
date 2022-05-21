@@ -1,11 +1,21 @@
 import useSWR from 'swr';
 import _ from 'lodash';
-import { useLocalStorage } from 'react-use';
 import { Me } from '../types/member';
 
+const getMeFromLocalStorage = (): Me | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  const localCacheData = localStorage.getItem('me');
+  if (!localCacheData) {
+    return null;
+  }
+  return JSON.parse(localCacheData) ?? null;
+};
+
 const useMe = (): { me: Me | null, mutate: () => void } => {
-  const [localMe, setLocalMe] = useLocalStorage<Me | undefined>('me');
-  const { data, error, mutate } = useSWR<Me>('/me', {
+  const localMe = getMeFromLocalStorage();
+  const { data, error, mutate } = useSWR('/me', {
     fallbackData: localMe,
     revalidateIfStale: true,
     revalidateOnFocus: false,
@@ -14,16 +24,16 @@ const useMe = (): { me: Me | null, mutate: () => void } => {
   });
 
   const mutateFunc = () => {
-    setLocalMe(undefined);
+    localStorage.removeItem('me');
     mutate();
   };
 
   if (error) {
-    setLocalMe(undefined);
+    localStorage.removeItem('me');
     return { me: null, mutate: mutateFunc };
   }
   if (!_.isEqual(localMe, data)) {
-    setLocalMe(data);
+    localStorage.setItem('me', JSON.stringify(data));
   }
   return { me: data ?? null, mutate: mutateFunc };
 };
