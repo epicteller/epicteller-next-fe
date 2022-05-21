@@ -33,7 +33,7 @@ jobs:
           encodedString: ${{ secrets.ENV_FILE_B64 }}
 
       - name: Build project
-        run: yarn && yarn build
+        run: yarn && yarn build && yarn export
 
       - name: Upload COS
         uses: KawashiroNitori/tencent-cos-action@endpoint-support
