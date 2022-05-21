@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 import _ from 'lodash';
+import { useCallback, useEffect } from 'react';
 import { Me } from '../types/member';
 
 const getMeFromLocalStorage = (): Me | null => {
@@ -23,18 +24,25 @@ const useMe = (): { me: Me | null, mutate: () => void } => {
     revalidateOnMount: false,
   });
 
-  const mutateFunc = () => {
+  const mutateFunc = useCallback(() => {
     localStorage.removeItem('me');
     mutate();
-  };
+  }, [mutate]);
+
+  useEffect(() => {
+    if (error) {
+      localStorage.removeItem('me');
+      return;
+    }
+    if (!_.isEqual(localMe, data)) {
+      localStorage.setItem('me', JSON.stringify(data));
+    }
+  }, [data, error, localMe, mutateFunc]);
 
   if (error) {
-    localStorage.removeItem('me');
     return { me: null, mutate: mutateFunc };
   }
-  if (!_.isEqual(localMe, data)) {
-    localStorage.setItem('me', JSON.stringify(data));
-  }
+
   return { me: data ?? null, mutate: mutateFunc };
 };
 

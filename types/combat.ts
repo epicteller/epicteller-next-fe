@@ -16,6 +16,7 @@ export type CombatState = 'initiating' | 'running' | 'ended';
 
 export interface Combat {
   id: string
+  campaignId?: string
   state: CombatState
   isRemoved: boolean
   tokens: { [tokenName: string]: CombatToken }
