@@ -56,7 +56,7 @@ const SideBarInner = ({
       </Toolbar>
       <Divider />
       <ScrollBar
-        style={{ height: '100%', width, overflowX: 'hidden' }}
+        style={{ height: '100%', overflowX: 'hidden' }}
         options={{
           overflowBehavior: { x: 'hidden' },
         }}
