@@ -8,12 +8,12 @@ import Title from '../components/util/Title';
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const { me } = useMe();
+  const { me, isValidating } = useMe();
   useEffect(() => {
-    if (!me) {
+    if (!me && !isValidating) {
       router.push('/signin').then();
     }
-  }, [me, router]);
+  }, [me, isValidating, router]);
   return (
     <BasicLayout>
       <>

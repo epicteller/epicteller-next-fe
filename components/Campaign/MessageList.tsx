@@ -28,7 +28,7 @@ const MessageList = ({ campaign, episode }: messageListProps) => {
   }
 
   return (
-    <ScrollBar>
+    <ScrollBar style={{ display: 'flex', flexGrow: 1, flexShrink: 1 }}>
       <Box sx={{ flexGrow: 1, flexShrink: 1 }}>
         <List>
           {

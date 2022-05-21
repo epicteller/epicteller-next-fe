@@ -1,49 +1,41 @@
-import useSWR from 'swr';
-import _ from 'lodash';
-import { useCallback, useEffect } from 'react';
+import useSWR, { KeyedMutator } from 'swr';
 import { Me } from '../types/member';
 
-const getMeFromLocalStorage = (): Me | null => {
+const getMeFromLocalStorage = (): Me | undefined => {
   if (typeof window === 'undefined') {
-    return null;
+    return undefined;
   }
   const localCacheData = localStorage.getItem('me');
   if (!localCacheData) {
-    return null;
+    return undefined;
   }
-  return JSON.parse(localCacheData) ?? null;
+  return JSON.parse(localCacheData) || undefined;
 };
 
-const useMe = (): { me: Me | null, mutate: () => void } => {
-  const localMe = getMeFromLocalStorage();
-  const { data, error, mutate } = useSWR('/me', {
-    fallbackData: localMe,
+const setMeToLocalStorage = (me: Me): void => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  localStorage.setItem('me', JSON.stringify(me));
+};
+
+const useMe = (): { me: Me | null, mutate: KeyedMutator<Me>, isValidating: boolean } => {
+  const { data, error, mutate, isValidating } = useSWR('/me', {
+    fallbackData: getMeFromLocalStorage(),
+    onSuccess: (me: Me) => {
+      setMeToLocalStorage(me);
+    },
     revalidateIfStale: true,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    revalidateOnMount: false,
+    revalidateOnMount: true,
   });
 
-  const mutateFunc = useCallback(() => {
-    localStorage.removeItem('me');
-    mutate();
-  }, [mutate]);
-
-  useEffect(() => {
-    if (error) {
-      localStorage.removeItem('me');
-      return;
-    }
-    if (!_.isEqual(localMe, data)) {
-      localStorage.setItem('me', JSON.stringify(data));
-    }
-  }, [data, error, localMe, mutateFunc]);
-
   if (error) {
-    return { me: null, mutate: mutateFunc };
+    return { me: null, mutate, isValidating };
   }
 
-  return { me: data ?? null, mutate: mutateFunc };
+  return { me: data ?? null, mutate, isValidating };
 };
 
 export default useMe;

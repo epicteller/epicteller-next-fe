@@ -1,7 +1,7 @@
 import { makeStyles } from '@mui/styles';
 import { Grid, InputAdornment, Link, TextField, useTheme } from '@mui/material';
 import { LoadingButton as Button } from '@mui/lab';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { AxiosError } from 'axios';
 import { LockOutlined, MailOutlined } from '@mui/icons-material';
 import NextLink from 'next/link';
@@ -26,17 +26,11 @@ const useStyles = makeStyles(() => {
 const SignInPage: NextPageWithLayout = () => {
   const router = useRouter();
   const classes = useStyles();
-  const { me, mutate } = useMe();
+  const { mutate } = useMe();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (me) {
-      router.push('/').then();
-    }
-  }, [me, router]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,7 +44,7 @@ const SignInPage: NextPageWithLayout = () => {
         email,
         password,
       });
-      mutate();
+      await mutate();
       await router.push('/');
     } catch (e) {
       const err = e as AxiosError;
