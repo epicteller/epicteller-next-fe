@@ -1,5 +1,7 @@
-import { Box, CircularProgress, List } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import useSWR from 'swr';
+import { useCallback, useRef } from 'react';
+import { useVirtual } from 'react-virtual';
 import { MessagesResponse } from '../../types/message';
 import MessageItem from './MessageItem';
 import { Campaign } from '../../types/campaign';
@@ -19,6 +21,13 @@ const MessageList = ({ campaign, episode }: messageListProps) => {
   const isLoading = !messageData && !messageError;
   const messages = messageData?.data ?? [];
 
+  const parentRef = useRef<HTMLElement | null>(null);
+  const rowVirtualizer = useVirtual({
+    size: messages.length,
+    parentRef,
+    estimateSize: useCallback(() => 71, []),
+  });
+
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1, p: 3, height: '100%' }}>
@@ -28,21 +37,28 @@ const MessageList = ({ campaign, episode }: messageListProps) => {
   }
 
   return (
-    <ScrollBar style={{ display: 'flex', flexGrow: 1, flexShrink: 1 }}>
-      <Box sx={{ flexGrow: 1, flexShrink: 1 }}>
-        <List>
-          {
-            messages.map((message, index) => (
-              <MessageItem
-                index={index}
-                key={message.id}
-                campaign={campaign}
-                message={message}
-              />
-            ))
-          }
-          <Box sx={{ height: 80 }} />
-        </List>
+    <ScrollBar
+      ref={(ref) => {
+        parentRef.current = ref?.osInstance()?.getElements().viewport ?? null;
+      }}
+      style={{
+        display: 'flex',
+        flexGrow: 1,
+        flexShrink: 1,
+      }}
+    >
+      <Box sx={{ flexGrow: 1, flexShrink: 1, height: rowVirtualizer.totalSize }}>
+        {rowVirtualizer.virtualItems.map((vRow) => (
+          <MessageItem
+            ref={vRow.measureRef}
+            campaign={campaign}
+            message={messages[vRow.index]}
+            index={vRow.index}
+            key={vRow.index}
+            startY={vRow.start}
+          />
+        ))}
+        <Box sx={{ height: 80 }} />
       </Box>
     </ScrollBar>
   );

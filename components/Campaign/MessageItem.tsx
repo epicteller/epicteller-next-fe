@@ -1,17 +1,7 @@
-import {
-  Avatar,
-  Box, Button,
-  Chip,
-  IconButton, Link,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Tooltip,
-  Typography,
-} from '@mui/material';
-import { useState } from 'react';
+import { Avatar, Box, Link, ListItem, ListItemAvatar, ListItemText, Tooltip, Typography } from '@mui/material';
+import { forwardRef, RefAttributes, useState } from 'react';
 import stc from 'string-to-color';
-import { DiceMessageContent, Message, MessageType, TextMessageContent } from '../../types/message';
+import { DiceMessageContent, Message, TextMessageContent } from '../../types/message';
 import { Campaign } from '../../types/campaign';
 import TimeChip from '../util/TimeChip';
 
@@ -19,6 +9,7 @@ export interface MessageItemProps {
   campaign: Campaign
   message: Message
   index: number
+  startY: number
 }
 
 export interface MessageContentProps {
@@ -80,7 +71,7 @@ const MessageContent = ({ message }: MessageContentProps) => {
   }
 };
 
-const MessageItem = ({ campaign, message }: MessageItemProps) => {
+const MessageItem = forwardRef<HTMLLIElement, MessageItemProps>(({ campaign, message, startY }, ref) => {
   const isGM = message.isGm;
   let avatar = <Avatar>?</Avatar>;
   let name = '未知';
@@ -108,7 +99,15 @@ const MessageItem = ({ campaign, message }: MessageItemProps) => {
 
   return (
     <ListItem
+      ref={ref}
       alignItems="flex-start"
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        transform: `translateY(${startY}px)`,
+      }}
     >
       <ListItemAvatar>
         {avatar}
@@ -135,6 +134,7 @@ const MessageItem = ({ campaign, message }: MessageItemProps) => {
       />
     </ListItem>
   );
-};
+});
+MessageItem.displayName = 'MessageItem';
 
 export default MessageItem;

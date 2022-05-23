@@ -9,6 +9,18 @@ const ThemeProvider: React.FunctionComponent = ({ children }: ProviderProps) => 
       palette: {
         mode: 'dark',
       },
+      typography: {
+        fontFamily: [
+          'Helvetica',
+          'Tahoma',
+          'Arial',
+          'PingFang SC',
+          'Hiragino Sans GB',
+          'Heiti SC',
+          'Microsoft YaHei',
+          'WenQuanYi Micro Hei',
+        ].join(','),
+      },
     }),
     [],
   );
