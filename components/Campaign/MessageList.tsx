@@ -26,6 +26,7 @@ const MessageList = ({ campaign, episode }: messageListProps) => {
     size: messages.length,
     parentRef,
     estimateSize: useCallback(() => 71, []),
+    overscan: 10,
   });
 
   if (isLoading) {
