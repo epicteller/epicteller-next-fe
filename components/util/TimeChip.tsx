@@ -1,9 +1,6 @@
-import { Tooltip, Typography, useTheme } from '@mui/material';
+import { Tooltip, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
-import React, { useState } from 'react';
-import { useInterval } from 'react-use';
-import { makeStyles } from '@mui/styles';
-import _ from 'lodash';
+import React, { useMemo } from 'react';
 
 export type TextType = 'relative' |
   'relativeOrDate' |
@@ -17,14 +14,6 @@ export interface PropTypes {
   textType?: TextType
 }
 
-const useStyles = makeStyles(() => {
-  const theme = useTheme();
-  return {
-    chip: {
-      margin: theme.spacing(0, 0.5),
-    },
-  };
-});
 const getInterval = (timestamp: number): number | null => {
   const now = Date.now() / 1000;
   const offset = Math.abs(now - timestamp);
@@ -37,65 +26,54 @@ const getInterval = (timestamp: number): number | null => {
   return null;
 };
 
-const TimeChip = ({ timestamp, textType = 'relative' }: PropTypes) => {
-  const datetime = DateTime.fromSeconds(timestamp).setLocale('zh-CN');
-  const [timeOffset, setTimeOffset] = useState(datetime.toRelative());
-  const classes = useStyles();
-  const delta = Math.abs(DateTime.now().toSeconds() - timestamp);
+const getTimeText = (datetime: DateTime, textType: TextType): string => {
+  const timeOffset = datetime.toRelative();
+  const delta = Math.abs(DateTime.now().toSeconds() - datetime.toSeconds());
   const sameYear = DateTime.now().year === datetime.year;
-
-  useInterval(() => {
-    setTimeOffset(datetime.toRelative());
-  }, _.includes(['relative', 'relativeOrDate'], textType) ? getInterval(timestamp) : null);
-
-  let timeText = '';
   switch (textType) {
     case 'relative': {
-      timeText = timeOffset ?? '';
-      break;
+      return timeOffset ?? '';
     }
     case 'datetime': {
       if (sameYear) {
-        timeText = datetime.toFormat('MM/dd HH:mm');
-      } else {
-        timeText = datetime.toFormat('yyyy/MM/dd HH:mm');
+        return datetime.toFormat('MM/dd HH:mm');
       }
-      break;
+      return datetime.toFormat('yyyy/MM/dd HH:mm');
     }
     case 'date': {
       if (sameYear) {
-        timeText = datetime.toFormat('MM/dd');
-      } else {
-        timeText = datetime.toFormat('yyyy/MM/dd');
+        return datetime.toFormat('MM/dd');
       }
-      break;
+      return datetime.toFormat('yyyy/MM/dd');
     }
     case 'time': {
-      timeText = datetime.toFormat('HH:mm');
-      break;
+      return datetime.toFormat('HH:mm');
     }
     case 'timeWithSecond': {
-      timeText = datetime.toFormat('HH:mm:ss');
-      break;
+      return datetime.toFormat('HH:mm:ss');
     }
     case 'relativeOrDate': {
       if (delta < 7 * 86400) {
-        timeText = timeOffset ?? '';
-      } else if (sameYear) {
-        timeText = datetime.toFormat('MM/dd');
-      } else {
-        timeText = datetime.toFormat('yyyy/MM/dd');
+        return timeOffset ?? '';
       }
-      break;
+      if (sameYear) {
+        return datetime.toFormat('MM/dd');
+      }
+      return datetime.toFormat('yyyy/MM/dd');
     }
     default: {
-      timeText = timeOffset ?? '';
+      return timeOffset ?? '';
     }
   }
+};
+
+const TimeChip = ({ timestamp, textType = 'relative' }: PropTypes) => {
+  const datetime = useMemo(() => DateTime.fromSeconds(timestamp).setLocale('zh-CN'), [timestamp]);
+  const timeText = useMemo(() => getTimeText(datetime, textType), [datetime, textType]);
 
   return (
     <Tooltip title={datetime.toFormat('yyyy/MM/dd HH:mm:ss')}>
-      <Typography component="span" className={classes.chip} variant="inherit">
+      <Typography component="span" sx={{ px: 0.5 }} variant="inherit">
         {timeText}
       </Typography>
     </Tooltip>
