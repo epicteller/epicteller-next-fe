@@ -169,7 +169,7 @@ const ResetPasswordPage: NextPageWithLayout = () => {
           </Button>
           <Grid container justifyContent="space-between" direction="row-reverse">
             <Grid item>
-              <Link color="textSecondary" component={NextLink} href="/" variant="body2">返回登录</Link>
+              <Link color="textSecondary" component={NextLink} href="/signin" variant="body2">返回登录</Link>
             </Grid>
           </Grid>
         </form>

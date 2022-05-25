@@ -111,7 +111,7 @@ const NavBar = ({ title = 'Epicteller' }: NavBarProps) => {
                 <Typography variant="subtitle1">{me?.name}</Typography>
               </ButtonBase>
             ) : (
-              <NextLink href="/"><Button>登录</Button></NextLink>
+              <NextLink href="/signin"><Button>登录</Button></NextLink>
             )}
           </Toolbar>
         </Container>
