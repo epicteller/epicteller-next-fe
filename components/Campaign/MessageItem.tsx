@@ -1,5 +1,5 @@
 import { Avatar, Box, Link, ListItem, ListItemAvatar, ListItemText, Tooltip, Typography } from '@mui/material';
-import { forwardRef, RefAttributes, useState } from 'react';
+import { forwardRef, RefAttributes, useMemo, useState } from 'react';
 import stc from 'string-to-color';
 import { DiceMessageContent, Message, TextMessageContent } from '../../types/message';
 import { Campaign } from '../../types/campaign';
@@ -13,6 +13,11 @@ export interface MessageItemProps {
 }
 
 export interface MessageContentProps {
+  message: Message
+}
+
+export interface MessageAvatarProps {
+  campaign: Campaign
   message: Message
 }
 
@@ -71,44 +76,57 @@ const MessageContent = ({ message }: MessageContentProps) => {
   }
 };
 
-const MessageItem = forwardRef<HTMLLIElement, MessageItemProps>(({ campaign, message, startY }, ref) => {
-  const isGM = message.isGm;
-  let avatar = <Avatar>?</Avatar>;
-  let name = '未知';
+const MessageAvatar = ({ campaign, message }: MessageAvatarProps) => {
   if (message.character) {
-    avatar = (
+    return (
       <Avatar
         src={message.character?.avatar}
-        sx={{ bgcolor: stc(message.character?.name) }}
+        sx={{
+          bgcolor: stc(message.character?.name),
+          height: 40,
+          width: 40,
+        }}
       >
         {message.character?.name[0]}
       </Avatar>
     );
-    name = message.character?.name;
-  } else if (isGM) {
-    avatar = (
+  }
+  if (message.isGm) {
+    return (
       <Avatar
         src={campaign.owner.avatar}
-        sx={{ bgcolor: stc(campaign.owner.name) }}
+        sx={{
+          bgcolor: stc(campaign.owner.name),
+          height: 40,
+          width: 40,
+        }}
       >
         {campaign.owner.name[0]}
       </Avatar>
     );
-    name = campaign.owner.name;
   }
+  return <Avatar>?</Avatar>;
+};
+
+const messageName = ({ campaign, message }: MessageAvatarProps): string => {
+  if (message.character) {
+    return message.character.name;
+  }
+  if (message.isGm) {
+    return campaign.owner.name;
+  }
+  return '未知';
+};
+
+const MessageInner = ({ campaign, message }: MessageAvatarProps) => {
+  const isGM = message.isGm;
+  const avatar = useMemo(() => <MessageAvatar campaign={campaign} message={message} />, [campaign, message]);
+  const content = useMemo(() => <MessageContent message={message} />, [message]);
+  const time = useMemo(() => <TimeChip timestamp={message.created} textType="time" />, [message]);
+  const name = useMemo(() => messageName({ campaign, message }), [campaign, message]);
 
   return (
-    <ListItem
-      ref={ref}
-      alignItems="flex-start"
-      sx={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        transform: `translateY(${startY}px)`,
-      }}
-    >
+    <>
       <ListItemAvatar>
         {avatar}
       </ListItemAvatar>
@@ -126,12 +144,31 @@ const MessageItem = forwardRef<HTMLLIElement, MessageItemProps>(({ campaign, mes
           >
             {name}
             <Typography component="span" sx={{ pl: 1 }} gutterBottom variant="caption" color="textSecondary">
-              <TimeChip timestamp={message.created} textType="time" />
+              {time}
             </Typography>
           </Typography>
         )}
-        secondary={<MessageContent message={message} />}
+        secondary={content}
       />
+    </>
+  );
+};
+
+const MessageItem = forwardRef<HTMLLIElement, MessageItemProps>(({ campaign, message, startY }, ref) => {
+  const inner = useMemo(() => <MessageInner campaign={campaign} message={message} />, [campaign, message]);
+
+  return (
+    <ListItem
+      ref={ref}
+      alignItems="flex-start"
+      sx={{
+        position: 'absolute',
+        top: startY,
+        left: 0,
+        width: '100%',
+      }}
+    >
+      {inner}
     </ListItem>
   );
 });
