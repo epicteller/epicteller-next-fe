@@ -20,22 +20,11 @@ module.exports = (phase, { defaultConfig }) => {
       },
     },
   };
-
-  if (phase === PHASE_DEVELOPMENT_SERVER) {
-    config.rewrites = async () => [{
-      source: '/api/:slug*',
-      destination: 'http://127.0.0.1:8000/:slug*',
-    },
-    ];
-  }
-
-  if (phase === PHASE_PRODUCTION_SERVER || phase === PHASE_PRODUCTION_BUILD || phase === PHASE_EXPORT) {
-    config.rewrites = async () => [{
-      source: '/api/:slug*',
-      destination: 'https://api.epicteller.com/:slug*',
-    },
-    ];
-  }
+  config.rewrites = async () => [{
+    source: '/api/:slug*',
+    destination: `${process.env.PROXY_API}/:slug*`,
+  },
+  ];
 
   return config;
 };

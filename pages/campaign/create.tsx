@@ -1,8 +1,12 @@
-import React, { ChangeEvent, ReactElement, ReactNode, useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import {
   Button,
-  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   MenuItem,
   Paper,

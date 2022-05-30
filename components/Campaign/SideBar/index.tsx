@@ -1,14 +1,4 @@
-import {
-  Box,
-  CircularProgress,
-  Divider,
-  Drawer,
-  List,
-  ListItem,
-  ListSubheader,
-  Toolbar,
-  Typography,
-} from '@mui/material';
+import { Box, CircularProgress, Divider, Drawer, List, ListSubheader, Toolbar, Typography } from '@mui/material';
 import React from 'react';
 import { Campaign } from '../../../types/campaign';
 import { Episode } from '../../../types/episode';
@@ -34,7 +24,6 @@ const SideBarInner = ({
   selectedEpisodeID,
   selectEpisode,
   mutate,
-  width,
 }: episodeSideBarProps) => {
   if (isLoading || !campaign) {
     return (
