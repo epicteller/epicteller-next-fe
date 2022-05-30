@@ -1,5 +1,5 @@
 import { Avatar, Box, Link, ListItem, ListItemAvatar, ListItemText, Tooltip, Typography } from '@mui/material';
-import { forwardRef, RefAttributes, useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import stc from 'string-to-color';
 import { DiceMessageContent, Message, TextMessageContent } from '../../types/message';
 import { Campaign } from '../../types/campaign';

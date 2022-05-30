@@ -2,7 +2,7 @@ import { KeyedMutator } from 'swr';
 import { AxiosError } from 'axios';
 import { Button, Tooltip } from '@mui/material';
 import RedoIcon from '@mui/icons-material/Redo';
-import { AddCombatTokenResponse, Combat } from '../../../types/combat';
+import { Combat } from '../../../types/combat';
 import epAPI from '../../../lib/api';
 import { EpictellerError } from '../../../types/errors/validation';
 import useNotifier from '../../../hooks/notifier';

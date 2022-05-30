@@ -14,6 +14,7 @@ export interface PropTypes {
   textType?: TextType
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getInterval = (timestamp: number): number | null => {
   const now = Date.now() / 1000;
   const offset = Math.abs(now - timestamp);
