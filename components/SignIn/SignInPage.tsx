@@ -60,68 +60,70 @@ const SignInPage: NextPageWithLayout = () => {
 
   return (
     <SignInLayout>
-      <form onSubmit={onSubmit} className={classes.form}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          label="邮箱地址"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          error={!!errorMessage}
-          InputProps={{
-            type: 'email',
-            startAdornment: (
-              <InputAdornment position="start">
-                <MailOutlined />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          label="密码"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          error={!!errorMessage}
-          helperText={errorMessage}
-          InputProps={{
-            type: 'password',
-            startAdornment: (
-              <InputAdornment position="start">
-                <LockOutlined />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          className={classes.submit}
-          loading={isSubmitting}
-          type="submit"
-          variant="contained"
-          fullWidth
-          color="primary"
-        >
-          登录
-        </Button>
-        <Grid container justifyContent="space-between">
-          <Grid item>
-            <Link color="textSecondary" component={NextLink} href="/reset-password" variant="body2">忘记密码？</Link>
+      <>
+        <form onSubmit={onSubmit} className={classes.form}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label="邮箱地址"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={!!errorMessage}
+            InputProps={{
+              type: 'email',
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailOutlined />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label="密码"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={!!errorMessage}
+            helperText={errorMessage}
+            InputProps={{
+              type: 'password',
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlined />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            className={classes.submit}
+            loading={isSubmitting}
+            type="submit"
+            variant="contained"
+            fullWidth
+            color="primary"
+          >
+            登录
+          </Button>
+          <Grid container justifyContent="space-between">
+            <Grid item>
+              <Link color="textSecondary" component={NextLink} href="/reset-password" variant="body2">忘记密码？</Link>
+            </Grid>
+            <Grid item>
+              <Link color="textSecondary" component={NextLink} href="/register" variant="body2">注册帐号</Link>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Link color="textSecondary" component={NextLink} href="/register" variant="body2">注册帐号</Link>
-          </Grid>
+        </form>
+        <Grid container justifyContent="center">
+          <Link color="textSecondary" underline="hover" variant="caption" target="_blank" rel="noreferrer" href="http://www.beian.gov.cn">
+            京ICP备2021025369号-1
+          </Link>
         </Grid>
-      </form>
-      <Grid container justifyContent="center">
-        <Link color="textSecondary" underline="hover" variant="caption" target="_blank" rel="noreferrer" href="http://www.beian.gov.cn">
-          京ICP备2021025369号-1
-        </Link>
-      </Grid>
+      </>
     </SignInLayout>
   );
 };
