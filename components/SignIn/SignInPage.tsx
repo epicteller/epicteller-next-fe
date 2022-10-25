@@ -117,6 +117,11 @@ const SignInPage: NextPageWithLayout = () => {
           </Grid>
         </Grid>
       </form>
+      <Grid container justifyContent="center">
+        <Link color="textSecondary" underline="hover" variant="caption" target="_blank" rel="noreferrer" href="http://www.beian.gov.cn">
+          京ICP备2021025369号-1
+        </Link>
+      </Grid>
     </SignInLayout>
   );
 };
