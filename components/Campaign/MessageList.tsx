@@ -17,7 +17,10 @@ const MessageList = ({ campaign, episode }: messageListProps) => {
   const {
     data: messageData,
     error: messageError,
-  } = useSWR<MessagesResponse>(episode && `/episodes/${episode.id}/messages?limit=-1`);
+  } = useSWR<MessagesResponse>(episode && `/episodes/${episode.id}/messages?limit=-1`, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  });
   const isLoading = !messageData && !messageError;
   const messages = messageData?.data ?? [];
 
@@ -26,6 +29,7 @@ const MessageList = ({ campaign, episode }: messageListProps) => {
     size: messages.length,
     parentRef,
     estimateSize: useCallback(() => 71, []),
+    overscan: 3,
   });
 
   if (isLoading) {
