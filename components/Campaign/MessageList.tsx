@@ -18,8 +18,8 @@ const MessageList = ({ campaign, episode }: messageListProps) => {
     data: messageData,
     error: messageError,
   } = useSWR<MessagesResponse>(episode && `/episodes/${episode.id}/messages?limit=-1`, {
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
+    revalidateOnFocus: true,
+    revalidateIfStale: true,
   });
   const isLoading = !messageData && !messageError;
   const messages = messageData?.data ?? [];
