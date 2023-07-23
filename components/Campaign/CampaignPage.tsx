@@ -13,7 +13,7 @@ import CampaignLayout from '../../layouts/Campaign';
 import CombatView from '../Combat/CombatView';
 import { PagingResponse } from '../../types';
 
-const minSideBarWidth = 240;
+const minSideBarWidth = 400;
 
 const isEpisodeExisted = (episodes: Episode[], episodeID: string | string[] | undefined): boolean => (
   !!episodeID && episodes.some((episode) => episode.id === episodeID)
